@@ -1,5 +1,6 @@
 # Sicily
 
+Gateway micro service to route graphql queries to GRPC services.
 
 ## Graphql query
 
