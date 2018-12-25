@@ -4,10 +4,13 @@ import (
 	"github.com/graphql-go/graphql"
 )
 
-var User = graphql.NewObject(graphql.ObjectConfig{
-	Name: "User",
+var Session = graphql.NewObject(graphql.ObjectConfig{
+	Name: "Session",
 	Fields: graphql.Fields{
 		"id": &graphql.Field{
+			Type: graphql.String,
+		},
+		"user_id": &graphql.Field{
 			Type: graphql.String,
 		},
 		"email": &graphql.Field{
@@ -24,19 +27,6 @@ var User = graphql.NewObject(graphql.ObjectConfig{
 		},
 		"updated_at": &graphql.Field{
 			Type: graphql.Int,
-		},
-	},
-})
-
-// UserWithTalks this store user information and it subscribed talks.
-var UserWithTalks = graphql.NewObject(graphql.ObjectConfig{
-	Name: "UserWithTalks",
-	Fields: graphql.Fields{
-		"user": &graphql.Field{
-			Type: User,
-		},
-		"talsk": &graphql.Field{
-			Type: graphql.NewList(Talk),
 		},
 	},
 })
