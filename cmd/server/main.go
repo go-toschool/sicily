@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"errors"
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
@@ -37,14 +38,20 @@ const (
 )
 
 func main() {
+	citizensHost := flag.String("citizens-host", "syracusa", "Citizens service host")
+	citizensPort := flag.Int64("citizens-port", 8001, "Citizens service port")
+	palermoHost := flag.String("palermo-host", "palermo", "Palermo service host")
+	palermoPort := flag.Int64("palermo-port", 8003, "Palermo service port")
+
+	flag.Parse()
 	// Connect services
-	citizensConn, err := grpc.Dial("localhost:8001", grpc.WithInsecure())
+	citizensConn, err := grpc.Dial(fmt.Sprintf("%s:%d", *citizensHost, *citizensPort), grpc.WithInsecure())
 	check("citizens connection:", err)
 
 	// platonConn, err := grpc.Dial("localhost:8002", grpc.WithInsecure())
 	// check("platon connection:", err)
 
-	palermoConn, err := grpc.Dial("localhost:8003", grpc.WithInsecure())
+	palermoConn, err := grpc.Dial(fmt.Sprintf("%s:%d", *palermoHost, *palermoPort), grpc.WithInsecure())
 	check("palermo connection:", err)
 	// Initialize citizen client
 	citizenSvc := citizens.NewCitizenshipClient(citizensConn)
