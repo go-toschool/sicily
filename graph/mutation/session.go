@@ -31,7 +31,7 @@ func CreateSession(ctx *graph.Context) *graphql.Field {
 				Type:         graphql.String,
 				DefaultValue: "",
 			},
-			"fullname": &graphql.ArgumentConfig{
+			"full_name": &graphql.ArgumentConfig{
 				Type: graphql.String,
 			},
 		},
@@ -41,7 +41,7 @@ func CreateSession(ctx *graph.Context) *graphql.Field {
 				return nil, errors.New("Invalid params")
 			}
 
-			fullname, ok := params.Args["fullname"].(string)
+			fullName, ok := params.Args["full_name"].(string)
 			if !ok {
 				return nil, errors.New("Invalid params")
 			}
@@ -55,7 +55,7 @@ func CreateSession(ctx *graph.Context) *graphql.Field {
 			opts := &citizens.CreateRequest{
 				Data: &citizens.Citizen{
 					Email:    email,
-					Fullname: fullname,
+					FullName: fullName,
 				},
 			}
 			// create user in syracusa service.
@@ -87,7 +87,7 @@ func CreateSession(ctx *graph.Context) *graphql.Field {
 			user := &sicily.User{
 				ID:       u.Data.Id,
 				Email:    u.Data.Email,
-				Fullname: u.Data.Fullname,
+				FullName: u.Data.FullName,
 				Token:    sessCred.Data.AuthToken,
 			}
 			return user, nil
@@ -118,7 +118,7 @@ func RefreshSession(ctx *graph.Context) *graphql.Field {
 				return nil, errors.New("Invalid params")
 			}
 
-			fullname, ok := params.Args["fullname"].(string)
+			fullName, ok := params.Args["full_name"].(string)
 			if !ok {
 				return nil, errors.New("Invalid params")
 			}
@@ -132,7 +132,7 @@ func RefreshSession(ctx *graph.Context) *graphql.Field {
 			opts := &citizens.CreateRequest{
 				Data: &citizens.Citizen{
 					Email:    email,
-					Fullname: fullname,
+					FullName: fullName,
 				},
 			}
 			// create user in syracusa service.
@@ -164,9 +164,10 @@ func RefreshSession(ctx *graph.Context) *graphql.Field {
 			user := &sicily.User{
 				ID:       u.Data.Id,
 				Email:    u.Data.Email,
-				Fullname: u.Data.Fullname,
+				FullName: u.Data.FullName,
 				Token:    sessCred.Data.AuthToken,
 			}
+
 			return user, nil
 		},
 	}

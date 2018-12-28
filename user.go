@@ -8,7 +8,7 @@ import (
 type User struct {
 	ID       string `json:"id,omitempty"`
 	Email    string `json:"email,omitempty"`
-	Fullname string `json:"fullname,omitempty"`
+	FullName string `json:"full_name,omitempty"`
 	Token    string `json:"token"`
 
 	CreatedAt time.Time  `json:"created_at,omitempty"`

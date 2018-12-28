@@ -38,30 +38,32 @@ const (
 )
 
 func main() {
-	citizensHost := flag.String("citizens-host", "syracuse", "Citizens service host")
+	citizensHost := flag.String("citizens-host", "localhost", "Citizens service host")
 	citizensPort := flag.Int64("citizens-port", 8001, "Citizens service port")
-	palermoHost := flag.String("palermo-host", "palermo", "Palermo service host")
+	palermoHost := flag.String("palermo-host", "localhost", "Palermo service host")
 	palermoPort := flag.Int64("palermo-port", 8003, "Palermo service port")
+	// platoHost := flag.String("plato-host", "plato", "Plato service host")
+	// platoPort := flag.Int64("plato-port", 8002, "Plato service port")
 
 	flag.Parse()
 	// Connect services
 	citizensConn, err := grpc.Dial(fmt.Sprintf("%s:%d", *citizensHost, *citizensPort), grpc.WithInsecure())
 	check("citizens connection:", err)
 
-	// platonConn, err := grpc.Dial("localhost:8002", grpc.WithInsecure())
-	// check("platon connection:", err)
-
 	palermoConn, err := grpc.Dial(fmt.Sprintf("%s:%d", *palermoHost, *palermoPort), grpc.WithInsecure())
 	check("palermo connection:", err)
+
+	// platonConn, err := grpc.Dial("localhost:8002", grpc.WithInsecure())
+	// check("platon connection:", err)
 	// Initialize citizen client
 	citizenSvc := citizens.NewCitizenshipClient(citizensConn)
-	// talksSvc := talks.NewTalkingClient(platonConn)
 	palermoSvc := auth.NewAuthServiceClient(palermoConn)
+	// talksSvc := talks.NewTalkingClient(platonConn)
 
 	graphCtx := &graph.Context{
-		UserService: citizenSvc,
-		// TalkService:    talksSvc,
+		UserService:    citizenSvc,
 		SessionService: palermoSvc,
+		// TalkService:    talksSvc,
 	}
 
 	// user schema
@@ -80,8 +82,6 @@ func main() {
 		SessionService: palermoSvc,
 		Next:           uc.Handle(users.Users),
 	}
-	// private endpoint
-	http.HandleFunc("/users", uac.CheckCorsAndAuth())
 
 	// // talk schema
 	// talkSchema, err := graphql.NewSchema(graphql.SchemaConfig{
@@ -95,8 +95,6 @@ func main() {
 	// 	Schema: talkSchema,
 	// }
 	// tac := ac.AddHandler(tc.Handle(apiTalks.Talks))
-	// // private endpoint
-	// http.HandleFunc("/tasks", tac.CheckCorsAndAuth())
 
 	// session
 	sessionSchema, err := graphql.NewSchema(graphql.SchemaConfig{
@@ -115,6 +113,11 @@ func main() {
 		SessionService: palermoSvc,
 		Next:           sc.Handle(session.Session),
 	}
+
+	// private endpoint
+	http.HandleFunc("/users", uac.CheckCorsAndAuth())
+	// http.HandleFunc("/tasks", tac.CheckCorsAndAuth())
+	// public endpoint
 	http.HandleFunc("/session", sac.CheckCors())
 
 	log.Println("Now server is running on port 3000")

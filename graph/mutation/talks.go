@@ -16,7 +16,7 @@ func CreateTalk(ctx *graph.Context) *graphql.Field {
 		Type:        types.Talk,
 		Description: "Create talk",
 		Args: graphql.FieldConfigArgument{
-			"description": &graphql.ArgumentConfig{
+			"full_name": &graphql.ArgumentConfig{
 				Type: graphql.String,
 			},
 		},
@@ -26,7 +26,7 @@ func CreateTalk(ctx *graph.Context) *graphql.Field {
 				return nil, errors.New("Invalid params")
 			}
 
-			fullname, ok := params.Args["fullname"].(string)
+			fullName, ok := params.Args["full_name"].(string)
 			if !ok {
 				return nil, errors.New("Invalid params")
 			}
@@ -35,7 +35,7 @@ func CreateTalk(ctx *graph.Context) *graphql.Field {
 			opts := &citizens.CreateRequest{
 				Data: &citizens.Citizen{
 					Email:    email,
-					Fullname: fullname,
+					FullName: fullName,
 				},
 			}
 

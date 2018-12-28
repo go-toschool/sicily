@@ -13,7 +13,7 @@ var User = graphql.NewObject(graphql.ObjectConfig{
 		"email": &graphql.Field{
 			Type: graphql.String,
 		},
-		"fullname": &graphql.Field{
+		"full_name": &graphql.Field{
 			Type: graphql.String,
 		},
 		"token": &graphql.Field{

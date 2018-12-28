@@ -19,7 +19,7 @@ func UpdateUser(ctx *graph.Context) *graphql.Field {
 			"id": &graphql.ArgumentConfig{
 				Type: graphql.String,
 			},
-			"fullname": &graphql.ArgumentConfig{
+			"full_name": &graphql.ArgumentConfig{
 				Type: graphql.String,
 			},
 		},
@@ -29,7 +29,7 @@ func UpdateUser(ctx *graph.Context) *graphql.Field {
 				return nil, errors.New("Invalid params")
 			}
 
-			fullname, ok := params.Args["fullname"].(string)
+			fullName, ok := params.Args["fullName"].(string)
 			if !ok {
 				return nil, errors.New("Invalid params")
 			}
@@ -38,7 +38,7 @@ func UpdateUser(ctx *graph.Context) *graphql.Field {
 			opts := &citizens.UpdateRequest{
 				UserId: id,
 				Data: &citizens.Citizen{
-					Fullname: fullname,
+					FullName: fullName,
 				},
 			}
 
