@@ -38,7 +38,7 @@ const (
 )
 
 func main() {
-	citizensHost := flag.String("citizens-host", "syracusa", "Citizens service host")
+	citizensHost := flag.String("citizens-host", "syracuse", "Citizens service host")
 	citizensPort := flag.Int64("citizens-port", 8001, "Citizens service port")
 	palermoHost := flag.String("palermo-host", "palermo", "Palermo service host")
 	palermoPort := flag.Int64("palermo-port", 8003, "Palermo service port")
