@@ -12,6 +12,9 @@ import (
 	"github.com/go-toschool/palermo"
 	"github.com/go-toschool/palermo/auth"
 	"github.com/go-toschool/sicily"
+	"github.com/gorilla/mux"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/urfave/negroni"
 
 	"google.golang.org/grpc"
 
@@ -114,14 +117,21 @@ func main() {
 		Next:           sc.Handle(session.Session),
 	}
 
+	r := mux.NewRouter()
+
 	// private endpoint
-	http.HandleFunc("/users", uac.CheckCorsAndAuth())
+	r.HandleFunc("/users", uac.CheckCorsAndAuth())
 	// http.HandleFunc("/tasks", tac.CheckCorsAndAuth())
 	// public endpoint
-	http.HandleFunc("/session", sac.CheckCors())
+	r.HandleFunc("/session", sac.CheckCors())
+	r.HandleFunc("/metrics", prometheus.Handler().ServeHTTP)
+	r.HandleFunc("/healthz", newHealthz().ServeHTTP)
 
 	log.Println("Now server is running on port 3000")
-	http.ListenAndServe(":3000", nil)
+	n := negroni.New()
+	n.UseHandler(r)
+
+	check("server: ", http.ListenAndServe(":3000", n))
 }
 
 // AuthCors ...
@@ -223,4 +233,14 @@ func check(section string, err error) {
 	if err != nil {
 		log.Fatal(fmt.Errorf("%s %v", section, err))
 	}
+}
+
+type healthzHandler struct{}
+
+func (h *healthzHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+}
+
+func newHealthz() *healthzHandler {
+	return &healthzHandler{}
 }
