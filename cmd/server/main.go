@@ -129,6 +129,7 @@ func main() {
 
 	log.Println("Now server is running on port 3000")
 	n := negroni.New()
+	n.Use(negroni.NewLogger())
 	n.UseHandler(r)
 
 	check("server: ", http.ListenAndServe(":3000", n))
