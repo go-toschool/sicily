@@ -4,7 +4,7 @@ RUN apk add --update ca-certificates
 
 COPY bin/sicily /usr/bin/sicily
 
-ENV CITIZENS_HOST "syracyse"
+ENV CITIZENS_HOST "syracuse"
 ENV CITIZENS_PORT 8001
 ENV PALERMO_HOST "palermo"
 ENV PALERMO_PORT 8003

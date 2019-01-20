@@ -50,10 +50,14 @@ func main() {
 
 	flag.Parse()
 	// Connect services
-	citizensConn, err := grpc.Dial(fmt.Sprintf("%s:%d", *citizensHost, *citizensPort), grpc.WithInsecure())
+	citizenURL := fmt.Sprintf("%s:%d", *citizensHost, *citizensPort)
+	fmt.Printf("Connecting to: %s\n", citizenURL)
+	citizensConn, err := grpc.Dial(citizenURL, grpc.WithInsecure())
 	check("citizens connection:", err)
 
-	palermoConn, err := grpc.Dial(fmt.Sprintf("%s:%d", *palermoHost, *palermoPort), grpc.WithInsecure())
+	palermoURL := fmt.Sprintf("%s:%d", *palermoHost, *palermoPort)
+	fmt.Printf("Connecting to: %s\n", palermoURL)
+	palermoConn, err := grpc.Dial(palermoURL, grpc.WithInsecure())
 	check("palermo connection:", err)
 
 	// platonConn, err := grpc.Dial("localhost:8002", grpc.WithInsecure())
@@ -123,6 +127,9 @@ func main() {
 	r.HandleFunc("/users", uac.CheckCorsAndAuth())
 	// http.HandleFunc("/tasks", tac.CheckCorsAndAuth())
 	// public endpoint
+	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(200)
+	})
 	r.HandleFunc("/session", sac.CheckCors())
 	r.HandleFunc("/metrics", prometheus.Handler().ServeHTTP)
 	r.HandleFunc("/healthz", newHealthz().ServeHTTP)
