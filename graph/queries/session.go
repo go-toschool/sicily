@@ -40,13 +40,3 @@ func GetSession(ctx *graph.Context) *graphql.Field {
 		},
 	}
 }
-
-// Session expose SessionQueries
-func Session(ctx *graph.Context) *graphql.Object {
-	return graphql.NewObject(graphql.ObjectConfig{
-		Name: "SessionQueries",
-		Fields: graphql.Fields{
-			"getSession": GetSession(ctx),
-		},
-	})
-}

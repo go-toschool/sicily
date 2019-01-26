@@ -87,14 +87,3 @@ func RegisterTalk(ctx *graph.Context) *graphql.Field {
 		},
 	}
 }
-
-// Talks expose UserQuery
-func Talks(ctx *graph.Context) *graphql.Object {
-	return graphql.NewObject(graphql.ObjectConfig{
-		Name: "TalkMutations",
-		Fields: graphql.Fields{
-			"createTalk":   CreateTalk(ctx),
-			"registerTalk": RegisterTalk(ctx),
-		},
-	})
-}
