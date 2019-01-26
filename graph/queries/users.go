@@ -21,8 +21,13 @@ func GetUser(ctx *graph.Context) *graphql.Field {
 	return &graphql.Field{
 		Type:        types.User,
 		Description: "Get user by id",
+		Args: graphql.FieldConfigArgument{
+			"id": &graphql.ArgumentConfig{
+				Type: graphql.String,
+			},
+		},
 		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
-			userID, ok := params.Context.Value(UserIDKey).(string)
+			userID, ok := params.Args["id"].(string)
 			if !ok {
 				return nil, errors.New("Invalid params")
 			}
@@ -82,16 +87,4 @@ func GetUsers(ctx *graph.Context) *graphql.Field {
 			return uu.Data, nil
 		},
 	}
-}
-
-// Users expose UserQuery
-func Users(ctx *graph.Context) *graphql.Object {
-	return graphql.NewObject(graphql.ObjectConfig{
-		Name: "UserQueries",
-		Fields: graphql.Fields{
-			"getUser":  GetUser(ctx),
-			"getUsers": GetUsers(ctx),
-			"me":       Me(ctx),
-		},
-	})
 }
