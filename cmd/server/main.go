@@ -15,7 +15,6 @@ import (
 	"github.com/go-toschool/sicily/cmd/server/healthz"
 	"github.com/go-toschool/sicily/cmd/server/home"
 	"github.com/go-toschool/sicily/cmd/server/prometheus"
-	"github.com/go-toschool/sicily/cmd/server/session"
 	"github.com/go-toschool/sicily/graph"
 	"github.com/go-toschool/sicily/graph/mutation"
 	"github.com/go-toschool/sicily/graph/queries"
@@ -63,20 +62,13 @@ func main() {
 	})
 	check("session schema:", err)
 
-	// public endpoints
-	sc := &session.Context{
-		User:    citizenSvc,
-		Session: palermoSvc,
-	}
-
 	mux := http.NewServeMux()
 
 	// public endpoint
-
 	mux.Handle("/", home.Routes())
 	mux.Handle("/metrics", prometheus.Routes())
 	mux.Handle("/healthz", healthz.Routes())
-	mux.Handle("/session", session.Routes(sc))
+
 	// private endpoint
 	ac := &api.Context{
 		User:    citizenSvc,
