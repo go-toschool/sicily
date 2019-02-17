@@ -51,13 +51,3 @@ func UpdateUser(ctx *graph.Context) *graphql.Field {
 		},
 	}
 }
-
-// Users expose UserQuery
-func Users(ctx *graph.Context) *graphql.Object {
-	return graphql.NewObject(graphql.ObjectConfig{
-		Name: "UserMutations",
-		Fields: graphql.Fields{
-			"updateUser": UpdateUser(ctx),
-		},
-	})
-}

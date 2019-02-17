@@ -35,7 +35,7 @@ var UserWithTalks = graphql.NewObject(graphql.ObjectConfig{
 		"user": &graphql.Field{
 			Type: User,
 		},
-		"talsk": &graphql.Field{
+		"talks": &graphql.Field{
 			Type: graphql.NewList(Talk),
 		},
 	},

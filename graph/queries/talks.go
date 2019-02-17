@@ -59,14 +59,3 @@ func GetTalks(ctx *graph.Context) *graphql.Field {
 		},
 	}
 }
-
-// Talks expose talks service
-func Talks(ctx *graph.Context) *graphql.Object {
-	return graphql.NewObject(graphql.ObjectConfig{
-		Name: "TalksQueries",
-		Fields: graphql.Fields{
-			"getTalk":  GetTalk(ctx),
-			"getTalks": GetTalks(ctx),
-		},
-	})
-}

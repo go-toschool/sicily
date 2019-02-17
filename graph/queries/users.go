@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 
+	"github.com/go-toschool/platon/talks"
 	"github.com/go-toschool/sicily"
 	"github.com/go-toschool/sicily/graph"
 	"github.com/go-toschool/sicily/graph/types"
@@ -21,8 +22,13 @@ func GetUser(ctx *graph.Context) *graphql.Field {
 	return &graphql.Field{
 		Type:        types.User,
 		Description: "Get user by id",
+		Args: graphql.FieldConfigArgument{
+			"id": &graphql.ArgumentConfig{
+				Type: graphql.String,
+			},
+		},
 		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
-			userID, ok := params.Context.Value(UserIDKey).(string)
+			userID, ok := params.Args["id"].(string)
 			if !ok {
 				return nil, errors.New("Invalid params")
 			}
@@ -45,7 +51,12 @@ func GetUser(ctx *graph.Context) *graphql.Field {
 func Me(ctx *graph.Context) *graphql.Field {
 	return &graphql.Field{
 		Type:        types.UserWithTalks,
-		Description: "Fill user data",
+		Description: "Full user data",
+		Args: graphql.FieldConfigArgument{
+			"id": &graphql.ArgumentConfig{
+				Type: graphql.String,
+			},
+		},
 		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 			userID, ok := params.Context.Value(UserIDKey).(string)
 			if !ok {
@@ -61,7 +72,25 @@ func Me(ctx *graph.Context) *graphql.Field {
 				return nil, err
 			}
 
-			return u.Data, nil
+			topts := &talks.GetRequest{
+				UserId: u.GetData().GetId(),
+			}
+			t, err := ctx.TalkService.Get(ctxb, topts)
+			if err != nil {
+				return nil, err
+			}
+
+			data := new(struct {
+				User  *citizens.Citizen
+				Talks []*talks.Talk
+			})
+
+			talks := make([]*talks.Talk, 0)
+			talks = append(talks, t.GetTalk())
+			data.User = u.GetData()
+			data.Talks = talks
+
+			return data, nil
 		},
 	}
 }
@@ -82,16 +111,4 @@ func GetUsers(ctx *graph.Context) *graphql.Field {
 			return uu.Data, nil
 		},
 	}
-}
-
-// Users expose UserQuery
-func Users(ctx *graph.Context) *graphql.Object {
-	return graphql.NewObject(graphql.ObjectConfig{
-		Name: "UserQueries",
-		Fields: graphql.Fields{
-			"getUser":  GetUser(ctx),
-			"getUsers": GetUsers(ctx),
-			"me":       Me(ctx),
-		},
-	})
 }

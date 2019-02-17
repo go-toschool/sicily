@@ -1,13 +1,20 @@
-package users
+package api
 
 import (
 	"context"
 	"fmt"
 	"net/http"
 
+	"github.com/go-toschool/palermo/auth"
 	"github.com/go-toschool/sicily"
 	"github.com/go-toschool/syracuse/citizens"
 	"github.com/graphql-go/graphql"
+)
+
+// ContentTypeGraphQL graphql content type.
+const (
+	ContentTypeGraphQL   = "application/graphql"
+	authUserIDContextKey = "fromTokenSessionUserId"
 )
 
 // GraphRequest struct to unmarshal query.
@@ -17,8 +24,9 @@ type GraphRequest struct {
 
 // Context ...
 type Context struct {
-	User   citizens.CitizenshipClient
-	Schema graphql.Schema
+	User    citizens.CitizenshipClient
+	Session auth.AuthServiceClient
+	Schema  graphql.Schema
 }
 
 // Handle creates a new bounded Handler with context.
@@ -34,7 +42,6 @@ func (c *Context) ExecuteQuery(query, userID string) *graphql.Result {
 		RequestString: query,
 		Context:       ctx,
 	})
-
 	if len(result.Errors) > 0 {
 		fmt.Printf("errors: %v\n", result.Errors)
 	}

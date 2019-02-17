@@ -1,4 +1,4 @@
-package session
+package api
 
 import (
 	"encoding/json"
@@ -6,13 +6,20 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/go-toschool/sicily"
 	"github.com/graphql-go/graphql"
 )
 
-// Session ...
-func Session(ctx *Context, w http.ResponseWriter, r *http.Request) {
+// API ...
+func API(ctx *Context, w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "This server does not support that HTTP method", http.StatusBadRequest)
+		return
+	}
+
+	id, ok := r.Context().Value(sicily.AuthUserIDContextKey).(string)
+	if !ok {
+		http.Error(w, "missing user id", http.StatusBadRequest)
 		return
 	}
 
@@ -36,9 +43,10 @@ func Session(ctx *Context, w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		result = ctx.ExecuteQuery(gr.Query)
+		result = ctx.ExecuteQuery(gr.Query, id)
 	default:
 		http.Error(w, "bad content type", http.StatusBadRequest)
+		return
 	}
 
 	w.Header().Set("Accept-Encoding", "gzip")
