@@ -10,10 +10,10 @@ func Queries(ctx *graph.Context) *graphql.Object {
 		Name: "Queries",
 		Fields: graphql.Fields{
 			"getSession": GetSession(ctx),
-			"getTalk":    GetTalk(ctx),
-			"getTalks":   GetTalks(ctx),
-			"getUser":    GetUser(ctx),
-			"getUsers":   GetUsers(ctx),
+			"talk":       GetTalk(ctx),
+			"talks":      GetTalks(ctx),
+			"user":       GetUser(ctx),
+			"users":      GetUsers(ctx),
 			"me":         Me(ctx),
 		},
 	})
