@@ -17,38 +17,8 @@ const (
 	UserIDKey sicily.StringValueKey = "user_id"
 )
 
-// GetUser fill graphql Field with data from postgres service.
+// GetUser resolve user information and users talk from external services.
 func GetUser(ctx *graph.Context) *graphql.Field {
-	return &graphql.Field{
-		Type:        types.User,
-		Description: "Get user by id",
-		Args: graphql.FieldConfigArgument{
-			"id": &graphql.ArgumentConfig{
-				Type: graphql.String,
-			},
-		},
-		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
-			userID, ok := params.Args["id"].(string)
-			if !ok {
-				return nil, errors.New("Invalid params")
-			}
-
-			ctxb := context.Background()
-			opts := &citizens.GetRequest{
-				UserId: userID,
-			}
-			u, err := ctx.UserService.Get(ctxb, opts)
-			if err != nil {
-				return nil, err
-			}
-
-			return u.Data, nil
-		},
-	}
-}
-
-// Me resolve user information and users talk from external services.
-func Me(ctx *graph.Context) *graphql.Field {
 	return &graphql.Field{
 		Type:        types.UserWithTalks,
 		Description: "Full user data",
